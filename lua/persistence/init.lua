@@ -70,7 +70,6 @@ function M.stop()
 end
 
 function M.save()
-  vim.g.sessionname = "Dummy"
   vim.cmd("mks! " .. e(M.current()))
 end
 
