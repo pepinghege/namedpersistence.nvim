@@ -162,14 +162,25 @@ end
 
 --- get/set current session name
 --- If a name is provided, it is set als the new session name.
---- The session name that was stored before this function call is return, if one was set.
+--- The session name that was stored before this function call is returned, if one was set.
 ---@param name? string
 ---@return string?
 function M.sessionname(name)
   local oldName = M._sessionname
   M._sessionname = name or oldName
   if oldName then
-    return M._sessionname
+    return oldName
+  end
+end
+
+--- Set or change the name of the session. Generates a notification.
+---@param name string
+function M.setSessionname(name)
+  local oldName = M.sessionname(name)
+  if oldName then
+    vim.notify("Renamed session from \"" .. oldName .. "\" to \"" .. name .. "\".", vim.log.levels.INFO)
+  else
+    vim.notify("Current session name set to \"" .. name .. "\".", vim.log.levels.INFO)
   end
 end
 
