@@ -20,7 +20,7 @@ function M.current(opts)
   end
   name = Config.options.dir .. name
   if M._name ~= nil then
-    name = name .. "." .. M._name
+    name = name .. "%%%" .. M._name
   end
   return name .. ".vim"
 end
