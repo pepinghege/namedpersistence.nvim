@@ -100,7 +100,10 @@ end
 ---@return string[]
 function M.list()
   local sessions = vim.fn.glob(Config.options.dir .. "*.vim", true, true)
-  sessions = sessions .. vim.fn.glob(Config.options.dir .. "*.vim_*", true, true)
+  local namedSessions = vim.fn.glob(Config.options.dir .. "*.vim_*", true, true)
+  for namedSession in namedSessions do
+    table.insert(sessions, namedSession)
+  end
   table.sort(sessions, function(a, b)
     return uv.fs_stat(a).mtime.sec > uv.fs_stat(b).mtime.sec
   end)
