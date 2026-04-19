@@ -132,7 +132,12 @@ function M.select()
   vim.ui.select(items, {
     prompt = "Select a session: ",
     format_item = function(item)
-      return vim.fn.fnamemodify(item.dir, ":p:~")
+      local formatted = ""
+      if item.name then
+        formatted = item.name .. ": "
+      end
+      formatted = formatted .. vim.fn.fnamemodify(item.dir, ":p:~")
+      return formatted
     end,
   }, function(item)
     if item then
