@@ -18,10 +18,12 @@ function M.current(opts)
       name = name .. "%%" .. branch:gsub("[\\/:]+", "%%")
     end
   end
+  name = Config.options.dir .. name
   if M._name ~= nil then
-    name = M._name .. "_" .. name
+    return name .. "_" .. M._name
+  else
+    return name
   end
-  return Config.options.dir .. name .. ".vim"
 end
 
 function M.setup(opts)
