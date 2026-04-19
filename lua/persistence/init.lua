@@ -12,17 +12,15 @@ local e = vim.fn.fnameescape
 function M.current(opts)
   opts = opts or {}
   local name = vim.fn.getcwd():gsub("[\\/:]+", "%%")
-  if Config.options.branch and opts.branch ~= false then
+  if M._name ~= nil then
+    name = name .. "%%%" .. M._name
+  elseif Config.options.branch and opts.branch ~= false then
     local branch = M.branch()
     if branch and branch ~= "main" and branch ~= "master" then
       name = name .. "%%" .. branch:gsub("[\\/:]+", "%%")
     end
   end
-  name = Config.options.dir .. name
-  if M._name ~= nil then
-    name = name .. "%%%" .. M._name
-  end
-  return name .. ".vim"
+  return Config.options.dir .. name.. ".vim"
 end
 
 function M.setup(opts)
