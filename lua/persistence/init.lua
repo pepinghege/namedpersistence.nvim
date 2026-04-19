@@ -4,6 +4,7 @@ local uv = vim.uv or vim.loop
 
 local M = {}
 M._active = false
+M._name = "Dummy"
 
 local e = vim.fn.fnameescape
 
@@ -16,6 +17,9 @@ function M.current(opts)
     if branch and branch ~= "main" and branch ~= "master" then
       name = name .. "%%" .. branch:gsub("[\\/:]+", "%%")
     end
+  end
+  if M._name ~= nil then
+    name = M._name .. "_" .. name
   end
   return Config.options.dir .. name .. ".vim"
 end
