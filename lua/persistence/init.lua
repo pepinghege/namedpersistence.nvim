@@ -114,17 +114,20 @@ function M.select()
   for _, session in ipairs(M.list()) do
     if uv.fs_stat(session) then
       local file = session:sub(#Config.options.dir + 1, -5)
-      local branch
+      local branch, index
       local dir, name = unpack(vim.split(file, "%%%", { plain = true }))
       if #name == 0 then
         dir, branch = unpack(vim.split(file, "%%", { plain = true }))
+        index = dir
+      else
+        index = dir .. "_" .. name
       end
       dir = dir:gsub("%%", "/")
       if jit.os:find("Windows") then
         dir = dir:gsub("^(%w)/", "%1:/")
       end
-      if not have[dir] then
-        have[dir] = true
+      if not have[index] then
+        have[index] = true
         items[#items + 1] = { session = session, dir = dir, name = name, branch = branch }
       end
     end
