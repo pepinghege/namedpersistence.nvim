@@ -154,8 +154,8 @@ end
 --- get current session name
 ---@return string?
 function M.sessionname()
-  if M.session_name ~= nil then
-    return M.session_name
+  if M._sessionname ~= nil then
+    return M._sessionname
   end
 end
 
