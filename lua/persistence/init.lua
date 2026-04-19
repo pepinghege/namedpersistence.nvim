@@ -4,7 +4,7 @@ local uv = vim.uv or vim.loop
 
 local M = {}
 M._active = false
-M._sessionname = "Dummy"
+M._sessionname = nil
 
 local e = vim.fn.fnameescape
 
@@ -134,7 +134,7 @@ function M.select()
     format_item = function(item)
       local formatted = ""
       if item.name then
-        formatted = item.name .. ": "
+        formatted = "\"" .. item.name .. "\": "
       end
       formatted = formatted .. vim.fn.fnamemodify(item.dir, ":p:~")
       return formatted
@@ -142,6 +142,7 @@ function M.select()
   }, function(item)
     if item then
       vim.fn.chdir(item.dir)
+      M.sessionname(item.name)
       M.load()
     end
   end)
@@ -156,10 +157,15 @@ function M.branch()
   end
 end
 
---- get current session name
+--- get/set current session name
+--- If a name is provided, it is set als the new session name.
+--- The session name that was stored before this function call is return, if one was set.
+---@param name? string
 ---@return string?
-function M.sessionname()
-  if M._sessionname ~= nil then
+function M.sessionname(name)
+  local oldName = M._sessionname
+  M._sessionname = name or oldName
+  if oldName then
     return M._sessionname
   end
 end
