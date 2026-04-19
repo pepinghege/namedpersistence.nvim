@@ -4,7 +4,7 @@ local uv = vim.uv or vim.loop
 
 local M = {}
 M._active = false
-M._name = "Dummy"
+M._sessionname = "Dummy"
 
 local e = vim.fn.fnameescape
 
@@ -12,8 +12,9 @@ local e = vim.fn.fnameescape
 function M.current(opts)
   opts = opts or {}
   local name = vim.fn.getcwd():gsub("[\\/:]+", "%%")
-  if M._name ~= nil then
-    name = name .. "%%%" .. M._name
+  local sessionname = M.sessionname()
+  if sessionname then
+    name = name .. "%%%" .. sessionname
   elseif Config.options.branch and opts.branch ~= false then
     local branch = M.branch()
     if branch and branch ~= "main" and branch ~= "master" then
@@ -147,6 +148,14 @@ function M.branch()
   if uv.fs_stat(".git") then
     local ret = vim.fn.systemlist("git branch --show-current")[1]
     return vim.v.shell_error == 0 and ret or nil
+  end
+end
+
+--- get current session name
+---@return string?
+function M.sessionname()
+  if M.session_name ~= nil then
+    return M.session_name
   end
 end
 
