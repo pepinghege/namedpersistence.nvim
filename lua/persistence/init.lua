@@ -160,14 +160,50 @@ function M.branch()
   end
 end
 
+--- remove an existing session
+---@param session string
+---@param opts? { notify?: boolean }
+function M.delete(session, opts)
+  if not session then
+    return
+  end
+
+  local isInConfigDir, startOfFile = string.find(session, Config.options.dir)
+  if not isInConfigDir or isInConfigDir ~= 1 then
+    vim.notify("Session to be deleted must be inside configured dir (\"" .. Config.options.dir .. "\").", vim.log.levels.ERROR)
+    return
+  end
+
+  opts = opts or {}
+
+  if vim.fn.filewritable(session) then
+    vim.fn.delete(session)
+    if opts.notify and startOfFile then -- startOfFile will never be nil (or we would have returned earlier)
+      local filename = string.sub(session, startOfFile) -- filename will neither be nil nor empty because of filewritable
+      local nameSeparator = string.find(filename, "%%%")
+      if nameSeparator then
+        local startOfName = nameSeparator + 3
+        nameSeparator = string.find(filename, "%%%")
+        filename = string.sub(filename, startOfName, nameSeparator)
+      else
+        filename = string.gsub(filename, "%%", "/")
+      end
+      vim.notify("Deleted session \"" .. filename .. "\".", vim.log.levels.WARN)
+    end
+  else
+    vim.notify("Missing permission to delete session file (\"" .. session .. "\").", vim.log.levels.ERROR)
+  end
+end
+
 --- get/set current session name
 --- If a name is provided (must consist of at least one character), it is set as the new session name.
+--- Also, if a name is provided, the session will be saved immediately.
 --- The session name that was stored before this function call is returned, if one was set.
---- If opts.notifyOnChange is set to true, a notification is generated.
---- TODO: - provide an option to actually rename it (i.e., delete the old one)
+--- If opts.notify is set to true, a notification is generated.
+--- If opts.deletedSession is set to true and the current session is already stored, that session is deleted.
 ---
 ---@param name? string
----@param opts? { notifyOnChange?: boolean }
+---@param opts? { notify?: boolean, deleteOldSession?: boolean }
 ---@return string?
 function M.sessionname(name, opts)
   if not name then
@@ -177,14 +213,28 @@ function M.sessionname(name, opts)
     return M._sessionname
   end
 
-  local oldName = M._sessionname
   opts = opts or {}
-  M._sessionname = name or oldName
 
-  if opts.notifyOnChange and oldName then
+  local deletedSession = nil
+  if opts.deleteOldSession then
+    deletedSession = M.current()
+    if vim.fn.filewritable(deletedSession) then
+      M.delete(deletedSession)
+    end
+  end
+
+  local oldName = M._sessionname
+  M._sessionname = name or oldName
+  M.save()
+
+  if opts.notify and oldName and deletedSession then
     vim.notify("Renamed session from \"" .. oldName .. "\" to \"" .. name .. "\".", vim.log.levels.INFO)
-  elseif opts.notifyOnChange then
-    vim.notify("Current session name set to \"" .. name .. "\".", vim.log.levels.INFO)
+  elseif opts.notify and oldName then
+    vim.notify("Continue session \"" .. oldName .. "\" as \"" .. name .. "\".", vim.log.levels.INFO)
+  elseif opts.notify and deletedSession then
+    vim.notify("Continue session as \"" .. name .. "\".", vim.log.levels.INFO)
+  elseif opts.notify then
+    vim.notify("Current session stored as \"" .. name .. "\".", vim.log.levels.INFO)
   end
 
   if oldName then
