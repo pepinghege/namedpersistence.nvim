@@ -229,6 +229,7 @@ function M.sessionname(name, opts)
   M._sessionname = name or oldName
 
   if opts.saveSession then
+    vim.notify("saving", vim.log.levels.TRACE)
     M.save()
   end
 
