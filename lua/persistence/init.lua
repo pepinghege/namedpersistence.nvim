@@ -145,7 +145,7 @@ function M.select()
   }, function(item)
     if item then
       vim.fn.chdir(item.dir)
-      M.sessionname(item.name)
+      M._sessionname = item.name
       M.load()
     end
   end)
