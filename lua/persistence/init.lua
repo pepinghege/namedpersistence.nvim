@@ -181,6 +181,7 @@ function M.delete(session, opts)
     if opts.notify and startOfFile then -- startOfFile will never be nil (or we would have returned earlier)
       local filename = string.sub(session, startOfFile) -- filename will neither be nil nor empty because of filewritable
       local _, name = unpack(vim.split(filename, "%%%", { plain = true }))
+      vim.notify("filename=" .. filename, vim.log.levels.TRACE)
       if name and #name ~= 0 then
         filename = name
       else
