@@ -219,7 +219,7 @@ function M.sessionname(name, opts)
   if opts.deleteOldSession then
     deletedSession = M.current()
     if vim.fn.filewritable(deletedSession) then
-      M.delete(deletedSession)
+      M.delete(deletedSession, { notify = true })
     end
   end
 
