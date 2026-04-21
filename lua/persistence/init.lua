@@ -145,7 +145,7 @@ function M.select()
   }, function(item)
     if item then
       vim.fn.chdir(item.dir)
-      M._sessionname = item.name
+      M.sessionname(item.name, { })
       M.load()
     end
   end)
@@ -197,13 +197,13 @@ end
 
 --- get/set current session name
 --- If a name is provided (must consist of at least one character), it is set as the new session name.
---- Also, if a name is provided, the session will be saved immediately.
 --- The session name that was stored before this function call is returned, if one was set.
---- If opts.notify is set to true, a notification is generated.
---- If opts.deletedSession is set to true and the current session is already stored, that session is deleted.
+--- If opts.notify is set to true, a notification is generated (default = false).
+--- If opts.saveSession is set to true (and a name is given), the session is immediately saved (default = true).
+--- If opts.deletedSession is set to true and the current session is already stored, that session is deleted (default = false).
 ---
 ---@param name? string
----@param opts? { notify?: boolean, deleteOldSession?: boolean }
+---@param opts? { notify?: boolean, saveSession?: boolean, deleteOldSession?: boolean }
 ---@return string?
 function M.sessionname(name, opts)
   if not name then
@@ -213,7 +213,7 @@ function M.sessionname(name, opts)
     return M._sessionname
   end
 
-  opts = opts or {}
+  opts = opts or { notify = false, saveSession = true, deleteOldSession = false }
 
   local deletedSession = nil
   if opts.deleteOldSession then
@@ -227,7 +227,10 @@ function M.sessionname(name, opts)
 
   local oldName = M._sessionname
   M._sessionname = name or oldName
-  M.save()
+
+  if opts.saveSession then
+    M.save()
+  end
 
   if opts.notify and oldName and deletedSession then
     vim.notify("Renamed session from \"" .. oldName .. "\" to \"" .. name .. "\".", vim.log.levels.INFO)
