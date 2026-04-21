@@ -180,13 +180,11 @@ function M.delete(session, opts)
     vim.fn.delete(session)
     if opts.notify and startOfFile then -- startOfFile will never be nil (or we would have returned earlier)
       local filename = string.sub(session, startOfFile) -- filename will neither be nil nor empty because of filewritable
-      local nameSeparator = string.find(filename, "[%%]3")
-      if nameSeparator then
-        local startOfName = nameSeparator + 3
-        nameSeparator = string.find(filename, "[%%]3")
-        filename = string.sub(filename, startOfName, nameSeparator)
+      local _, name = unpack(vim.split(filename, "%%%", { plain = true }))
+      if name and #name ~= 0 then
+        filename = name
       else
-        filename = string.gsub(filename, "[%%]2", "/")
+        filename = filename:gsub("%%", "/")
       end
       vim.notify("Deleted session \"" .. filename .. "\".", vim.log.levels.WARN)
     end
