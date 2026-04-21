@@ -183,10 +183,10 @@ function M.delete(session, opts)
       local nameSeparator = string.find(filename, "[%%]3")
       if nameSeparator then
         local startOfName = nameSeparator + 3
-        nameSeparator = string.find(filename, "%%%%%%")
+        nameSeparator = string.find(filename, "[%%]3")
         filename = string.sub(filename, startOfName, nameSeparator)
       else
-        filename = string.gsub(filename, "%%%%", "/")
+        filename = string.gsub(filename, "[%%]2", "/")
       end
       vim.notify("Deleted session \"" .. filename .. "\".", vim.log.levels.WARN)
     end
