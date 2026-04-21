@@ -116,7 +116,7 @@ function M.select()
       local file = session:sub(#Config.options.dir + 1, -5)
       local branch, index
       local dir, name = unpack(vim.split(file, "%%%", { plain = true }))
-      if #name == 0 then
+      if not name or #name == 0 then
         dir, branch = unpack(vim.split(file, "%%", { plain = true }))
         index = dir
       else
@@ -174,6 +174,10 @@ function M.sessionname(name)
 end
 
 --- Set or change the name of the session. Generates a notification.
+--- TODO: - provide an option to actually rename it (i.e., delete the old one)
+---       - implement an optional "opts" argument, to specify whether a notification
+---         should be printed and then merge function back with sessionname()
+---
 ---@param name string
 function M.setSessionname(name)
   local oldName = M.sessionname(name)
