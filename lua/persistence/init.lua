@@ -217,8 +217,10 @@ function M.sessionname(name, opts)
 
   local deletedSession = nil
   if opts.deleteOldSession then
+    vim.notify("deleteOldSession is set", vim.log.levels.TRACE)
     deletedSession = M.current()
     if vim.fn.filewritable(deletedSession) then
+      vim.notify("deleting", vim.log.levels.TRACE)
       M.delete(deletedSession, { notify = true })
     end
   end
@@ -235,6 +237,8 @@ function M.sessionname(name, opts)
     vim.notify("Continue session as \"" .. name .. "\".", vim.log.levels.INFO)
   elseif opts.notify then
     vim.notify("Current session stored as \"" .. name .. "\".", vim.log.levels.INFO)
+  else
+    vim.notify("notify is off", vim.log.levels.TRACE)
   end
 
   if oldName then
