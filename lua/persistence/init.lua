@@ -161,30 +161,25 @@ function M.branch()
 end
 
 --- get/set current session name
---- If a name is provided, it is set als the new session name.
+--- If a name is provided, it is set as the new session name.
 --- The session name that was stored before this function call is returned, if one was set.
+--- If opts.notifyOnChange is set to true, a notification is generated.
+--- TODO: - provide an option to actually rename it (i.e., delete the old one)
+---
 ---@param name? string
+---@param opts? { notifyOnChange?: boolean }
 ---@return string?
-function M.sessionname(name)
+function M.sessionname(name, opts)
   local oldName = M._sessionname
+  opts = opts or {}
   M._sessionname = name or oldName
+  if opts.notifyOnChange and oldName then
+    vim.notify("Renamed session from \"" .. oldName .. "\" to \"" .. name .. "\".", vim.log.levels.INFO)
+  elseif opts.notifyOnChange then
+    vim.notify("Current session name set to \"" .. name .. "\".", vim.log.levels.INFO)
+  end
   if oldName then
     return oldName
-  end
-end
-
---- Set or change the name of the session. Generates a notification.
---- TODO: - provide an option to actually rename it (i.e., delete the old one)
----       - implement an optional "opts" argument, to specify whether a notification
----         should be printed and then merge function back with sessionname()
----
----@param name string
-function M.setSessionname(name)
-  local oldName = M.sessionname(name)
-  if oldName then
-    vim.notify("Renamed session from \"" .. oldName .. "\" to \"" .. name .. "\".", vim.log.levels.INFO)
-  else
-    vim.notify("Current session name set to \"" .. name .. "\".", vim.log.levels.INFO)
   end
 end
 
