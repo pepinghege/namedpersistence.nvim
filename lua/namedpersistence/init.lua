@@ -1,4 +1,4 @@
-local Config = require("persistence.config")
+local Config = require("namedpersistence.config")
 
 local uv = vim.uv or vim.loop
 
@@ -31,7 +31,7 @@ end
 
 function M.fire(event)
   vim.api.nvim_exec_autocmds("User", {
-    pattern = "Persistence" .. event,
+    pattern = "NamedPersistence" .. event,
   })
 end
 
@@ -43,7 +43,7 @@ end
 function M.start()
   M._active = true
   vim.api.nvim_create_autocmd("VimLeavePre", {
-    group = vim.api.nvim_create_augroup("persistence", { clear = true }),
+    group = vim.api.nvim_create_augroup("namedpersistence", { clear = true }),
     callback = function()
       M.fire("SavePre")
 
@@ -67,7 +67,7 @@ end
 
 function M.stop()
   M._active = false
-  pcall(vim.api.nvim_del_augroup_by_name, "persistence")
+  pcall(vim.api.nvim_del_augroup_by_name, "namedpersistence")
 end
 
 function M.save()

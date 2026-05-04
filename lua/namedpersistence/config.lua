@@ -1,6 +1,6 @@
 local M = {}
 
----@class Persistence.Config
+---@class NamedPersistence.Config
 local defaults = {
   dir = vim.fn.stdpath("state") .. "/sessions/", -- directory where session files are saved
   -- minimum number of file buffers that need to be open to save
@@ -9,7 +9,7 @@ local defaults = {
   branch = true, -- use git branch to save session
 }
 
----@type Persistence.Config
+---@type NamedPersistence.Config
 M.options = {}
 
 function M.setup(opts)
