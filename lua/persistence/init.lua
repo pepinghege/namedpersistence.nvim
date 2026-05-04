@@ -163,8 +163,7 @@ end
 --- get/set current session name
 --- If a name is provided (must consist of at least one character), it is set as the new session name.
 --- The session name that was stored before this function call is returned, if one was set.
---- If opts.notifyOnChange is set to true, a notification is generated.
---- TODO: - provide an option to actually rename it (i.e., delete the old one)
+--- If opts.notifyOnChange is set to true, a notification is generated (default is false).
 ---
 ---@param name? string
 ---@param opts? { notifyOnChange?: boolean }
